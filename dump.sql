@@ -21,7 +21,7 @@
 
 LOCK TABLES `Adresse` WRITE;
 /*!40000 ALTER TABLE `Adresse` DISABLE KEYS */;
-INSERT INTO `Adresse` VALUES (1,'75010','Rue de Crimée','248'),(2,'75018','Rue Marcadet','52'),(3,'75009','Rue de Babylone','33');
+INSERT INTO `Adresse` VALUES (1,'75010','Rue de Crimée','248'),(2,'75018','Rue Marcadet','52'),(3,'75009','Rue de Babylone','33'),(4,'75019','Rue de Curial','33'),(5,'75013','Rue de Tolbiac','50'),(6,'75007','Rue Vannau','34');
 /*!40000 ALTER TABLE `Adresse` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -66,6 +66,16 @@ INSERT INTO `Commande_Menu` VALUES (1,1,1),(2,1,1),(3,1,2),(4,1,3);
 UNLOCK TABLES;
 
 --
+-- Dumping data for table `Commande_Menu_Produit`
+--
+
+LOCK TABLES `Commande_Menu_Produit` WRITE;
+/*!40000 ALTER TABLE `Commande_Menu_Produit` DISABLE KEYS */;
+INSERT INTO `Commande_Menu_Produit` VALUES (1,1,1),(2,2,1),(2,3,1),(2,4,1),(7,1,1),(7,2,1),(7,3,1),(7,4,1),(8,1,1),(8,2,1),(8,3,1),(8,4,1);
+/*!40000 ALTER TABLE `Commande_Menu_Produit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Dumping data for table `Ingredient`
 --
 
@@ -101,7 +111,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `Pizzeria` WRITE;
 /*!40000 ALTER TABLE `Pizzeria` DISABLE KEYS */;
-INSERT INTO `Pizzeria` VALUES (1,'OC Pizza',1),(2,'OC Pizza 2',3);
+INSERT INTO `Pizzeria` VALUES (1,'OC Pizza',1),(2,'OC Pizza 2',3),(3,'OC Pizza 3',4),(4,'OC Pizza 4',5),(5,'OC Pizza 5',6);
 /*!40000 ALTER TABLE `Pizzeria` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -136,16 +146,6 @@ INSERT INTO `Produit_Commande` VALUES (1,1,2),(3,1,2);
 UNLOCK TABLES;
 
 --
--- Dumping data for table `Commande_Menu_Produit`
---
-
-LOCK TABLES `Commande_Menu_Produit` WRITE;
-/*!40000 ALTER TABLE `Commande_Menu_Produit` DISABLE KEYS */;
-INSERT INTO `Commande_Menu_Produit` VALUES (1,1,1),(2,2,1),(2,3,1),(2,4,1),(7,1,1),(7,2,1),(7,3,1),(7,4,1),(8,1,1),(8,2,1),(8,3,1),(8,4,1);
-/*!40000 ALTER TABLE `Commande_Menu_Produit` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping data for table `Role`
 --
 
@@ -174,4 +174,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-18  9:54:18
+-- Dump completed on 2019-01-18 18:31:22
