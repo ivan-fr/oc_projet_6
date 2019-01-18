@@ -1,3 +1,5 @@
+use pizzeria;
+
 DROP PROCEDURE produit_par_categorie_depuis_pizzeria;
 DELIMITER |
 CREATE PROCEDURE produit_par_categorie_depuis_pizzeria(in p_pizzeria_id smallint unsigned, in p_categorie_texte  varchar(45))
@@ -51,9 +53,9 @@ BEGIN
 END|
 DELIMITER ;
 
-DROP PROCEDURE table_commandes_par_pizzerias;
+DROP PROCEDURE create_TMPtable_commandes_par_pizzerias;
 DELIMITER |
-CREATE PROCEDURE table_commandes_par_pizzerias()
+CREATE PROCEDURE create_TMPtable_commandes_par_pizzerias()
 BEGIN
 DROP TEMPORARY TABLE IF EXISTS TMP_commandes_par_pizzerias;
 
@@ -78,19 +80,20 @@ SELECT GROUP_CONCAT(distinct union_.idPizzeria) as idPizzeria,
     GROUP BY Commande.idCommande
     UNION
 	SELECT Pizzeria.idPizzeria, Pizzeria.nom, Commande.idCommande as idCommande, Commande.statut, Commande.date,
-				   CONCAT(Menu.nom, '(', GROUP_CONCAT(CONCAT(Produit_CompositionMenu.quantité, '-', Produit_Indirect.nom) SEPARATOR ';'), ')')as produits,
+				   CONCAT(Menu.nom, '(', GROUP_CONCAT(CONCAT(Commande_Menu_Produit.quantité, '-', Produit_Indirect.nom) SEPARATOR ';'), ')')as produits,
                    Menu.prix_unitaire as prix
     FROM Commande
 	
     INNER JOIN Pizzeria on Pizzeria.idPizzeria = Commande.Pizzeria_id
     
-	LEFT JOIN Composition_Menu on Commande.idCommande = Composition_Menu.Commande_id
-	LEFT JOIN Produit_CompositionMenu on Composition_Menu.idCompositionMenu = Produit_CompositionMenu.Composition_Menu_id
-    LEFT JOIN Produit as Produit_Indirect on Produit_CompositionMenu.Produit_id = Produit_Indirect.idProduit
+	LEFT JOIN Commande_Menu on Commande.idCommande = Commande_Menu.Commande_id
     
-	LEFT JOIN Menu on Composition_Menu.Menu_id = Menu.idMenu
+	LEFT JOIN Commande_Menu_Produit on Commande_Menu.idCommandeMenu = Commande_Menu_Produit.Commande_Menu_id
+    LEFT JOIN Produit as Produit_Indirect on Commande_Menu_Produit.Produit_id = Produit_Indirect.idProduit
+    
+	LEFT JOIN Menu on Commande_Menu.Menu_id = Menu.idMenu
 
-    GROUP BY Commande.idCommande, Composition_Menu.idCompositionMenu) as union_
+    GROUP BY Commande.idCommande, Commande_Menu.idCommandeMenu) as union_
     GROUP BY union_.idCommande;
 END|
 DELIMITER ;
@@ -117,17 +120,31 @@ SELECT COALESCE(sous_select.pizzeria, 'Total') as pizzeria,
  FROM (
 	SELECT pizzeria, DATE(date) as date, SUM(prix) as chiffre_affaire
     FROM TMP_commandes_par_pizzerias
-    WHERE MONTH(date) = MONTH(CURRENT_DATE()) AND YEAR(date) = YEAR(CURRENT_DATE())
+    WHERE MONTH(date) = 11 AND YEAR(date) = 2018
     GROUP BY pizzeria, DATE(date) with rollup) 
 as sous_select;
 END|
 DELIMITER ;
 
+DROP PROCEDURE menus_detail;
+DELIMITER |
+CREATE PROCEDURE menus_detail()
+BEGIN
+SELECT Menu.idMenu, Menu.nom, Menu.prix_unitaire, GROUP_CONCAT(CONCAT(Categorie_Menu.quantité, '-', Categorie.texte) SEPARATOR ';') as Composition
+FROM Menu
+INNER JOIN Categorie_Menu on Categorie_Menu.Menu_id = Menu.idMenu
+INNER JOIN Categorie on Categorie_Menu.Categorie_id = Categorie.idCategorie
+GROUP BY Menu.idMenu;
+END|
+DELIMITER ;
+
+call menus_detail();
 call produit_par_categorie_depuis_pizzeria(1, 'entree');
 call produit_par_categorie_depuis_pizzeria(1, 'pizza');
 call inverse_stock_ingredient_depuis_pizzeria(1, 'merguez');
 call produit_par_categorie_depuis_pizzeria(1, 'pizza');
 
-call table_commandes_par_pizzerias();
+call create_TMPtable_commandes_par_pizzerias();
 call commandes_par_pizzeria(1);
+call commandes_par_pizzeria(2);
 call chiffre_affaire();
