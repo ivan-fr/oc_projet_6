@@ -1,10 +1,10 @@
 use pizzeria;
 
-DROP PROCEDURE produit_par_categorie_depuis_pizzeria;
+DROP PROCEDURE produit_par_categorie_par_pizzeria;
 DELIMITER |
-CREATE PROCEDURE produit_par_categorie_depuis_pizzeria(in p_pizzeria_id smallint unsigned, in p_categorie_texte  varchar(45))
+CREATE PROCEDURE produit_par_categorie_par_pizzeria(in p_pizzeria_id smallint unsigned, in p_categorie_texte  varchar(45))
 BEGIN
-	select Pizzeria.nom,
+	select Pizzeria.nom as nom_pizzeria,
     Produit.nom as Produit,
 	group_concat(Ingredient.texte separator ', ') as ingredients,
     INSTR(group_concat(Pizzeria_Ingredient.stock separator ''), 0) as not_stock,
@@ -28,7 +28,7 @@ DELIMITER ;
 
 DROP PROCEDURE inverse_stock_ingredient_depuis_pizzeria;
 DELIMITER |
-CREATE PROCEDURE inverse_stock_ingredient_depuis_pizzeria(in p_pizzeria_id smallint unsigned, in p_ingredient_texte varchar(200))
+CREATE PROCEDURE inverse_stock_ingredient_par_pizzeria(in p_pizzeria_id smallint unsigned, in p_ingredient_texte varchar(200))
 BEGIN
 	DECLARE stock_boolean tinyint(1);
 	
@@ -139,10 +139,10 @@ END|
 DELIMITER ;
 
 call menus_detail();
-call produit_par_categorie_depuis_pizzeria(1, 'entree');
-call produit_par_categorie_depuis_pizzeria(1, 'pizza');
-call inverse_stock_ingredient_depuis_pizzeria(1, 'merguez');
-call produit_par_categorie_depuis_pizzeria(1, 'pizza');
+call produit_par_categorie_par_pizzeria(1, 'entree');
+call produit_par_categorie_par_pizzeria(1, 'pizza');
+call inverse_stock_ingredient_par_pizzeria(1, 'merguez');
+call produit_par_categorie_par_pizzeria(1, 'pizza');
 
 call create_TMPtable_commandes_par_pizzerias();
 call commandes_par_pizzeria(1);
